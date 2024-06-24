@@ -11,14 +11,17 @@
 #==============================================================================
 ##Mandatory - Read the following sample details and give similar values depends on your certificate parameters to generate csr and keys
 
-#Enter Common Name (CN): example.com
-#Enter Country (C): US
-#Enter State (ST): Washington
-#Enter Location (L): Seatle
-#Enter Organization (O): Example Corporation
-#Enter Organizational Unit (OU): IT
-#Enter a comma-separated list of SAN entries (e.g., DNS:example.com,DNS:www.example.com): DNS:www.example.com,DNS:hr.example.com,DNS:it.example.com,DNS:finance.example.com,DNS:www.service.example.com,DNS:k-12.example.com,DNS:www.k-12.example.com
+<<comment
+Enter Common Name (CN): example.com
+Enter Country (C): US
+Enter State (ST): Washington
+Enter Location (L): Seatle
+Enter Organization (O): Example Corporation
+Enter Organizational Unit (OU): IT
+Enter a comma-separated list of SAN entries (e.g., DNS:example.com,DNS:www.example.com): DNS:example.com DNS:www.example.com,DNS:hr.example.com,DNS:it.example.com,DNS:finance.example.com,DNS:www.service.example.com,DNS:k-12.example.com,DNS:www.k-12.example.com
+comment
 
+#Note : Any domain mentioned in the common name needs to be stated in the SAN as well; otherwise, the entry won't appear in the created CSR.
 ##run the script - ./script_gen_csr_key_with_given_values.sh
 ## Enter the values one by one as similar to the sample values above
 ## CSR and KEYS file will be generated and stored in the folder CSR_and_KEYS
