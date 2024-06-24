@@ -1,0 +1,74 @@
+#!/bin/bash
+#title           :script_to_verify_csr.sh
+#description     :This is a bash based script to verify CSR and extract the subject / SAN from csr
+#author	         :spiritrident
+#github user id  :spiritrident
+#date            :20240624
+#bash_version    :5.0.7(1)-release (x86_64-redhat-linux-gnu)   
+#usage		       :bash script_to_verify_csr.sh or ./script_to_verify_csr.sh test_file.csr
+#notes           :use any editor to modify this script.
+#Privilege       :file must have execute permission (chmod 744 script_to_verify_csr.sh )
+#==============================================================================
+# to run the script ./script_to_verify_csr.sh test_file.csr
+#replace the "test_file.csr" with your csr
+#sample output
+<<comment
+Verifying the CSR...
+Certificate request self-signature verify OK
+CSR verification succeeded.
+Extracting subject from the CSR...
+Subject: subject=C=US, ST=Washington, L=Seatle, O=Example Corporation, OU=IT, CN=example.com
+Extracting Subject Alternative Names (SANs) from the CSR...
+Subject Alternative Names (SANs): DNS:example.com, DNS:www.example.com, DNS:hr.example.com, DNS:finance.example.com, DNS:it.example.com
+comment
+
+
+#!/bin/bash
+
+# Function to display usage information
+usage() {
+    echo "Usage: $0 <csr_file>"
+    exit 1
+}
+
+# Check if the CSR file is provided as an argument
+if [ -z "$1" ]; then
+    usage
+fi
+
+csr_file=$1
+
+# Verify if the CSR file exists
+if [ ! -f "$csr_file" ]; then
+    echo "CSR file not found: $csr_file"
+    exit 1
+fi
+
+# Verify the CSR
+echo "Verifying the CSR..."
+openssl req -in "$csr_file" -noout -verify
+if [ $? -ne 0 ]; then
+    echo "CSR verification failed."
+    exit 1
+else
+    echo "CSR verification succeeded."
+fi
+
+# Extract the subject from the CSR
+echo "Extracting subject from the CSR..."
+subject=$(openssl req -in "$csr_file" -noout -subject)
+if [ $? -ne 0 ]; then
+    echo "Failed to extract subject from the CSR."
+    exit 1
+else
+    echo "Subject: $subject"
+fi
+
+# Extract the SANs from the CSR
+echo "Extracting Subject Alternative Names (SANs) from the CSR..."
+sans=$(openssl req -in "$csr_file" -noout -text | grep -A 1 "Subject Alternative Name" | tail -n 1)
+if [ -z "$sans" ]; then
+    echo "No Subject Alternative Names (SANs) found in the CSR."
+else
+    echo "Subject Alternative Names (SANs): $sans"
+fi
